@@ -1,4 +1,4 @@
-package edu.princeton.algorithms.part1.lecture1;
+package edu.princeton.algorithms.part1.week1;
 
 public class QuickFindImpl {
 
