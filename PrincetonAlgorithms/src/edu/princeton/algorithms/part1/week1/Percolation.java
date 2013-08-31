@@ -14,12 +14,15 @@ public class Percolation {
 	public Percolation(int n) {
 		siteLength = n;
 		sitesCount = n * n;
-		sites = new boolean[sitesCount];
+		sites = new boolean[sitesCount + 2];
 
 		weightedQUF = new WeightedQuickUnionUF(sitesCount + 2);
 
 		virtualTop = sitesCount;
 		virtualBottom = sitesCount + 1;
+
+		sites[virtualTop] = true;
+		sites[virtualBottom] = true;
 	}
 
 	/**
@@ -33,9 +36,9 @@ public class Percolation {
 				System.out.println("Opening site# " + siteIndex);
 				sites[siteIndex] = true;
 				if (row == 1) {
-					weightedQUF.union(siteIndex, virtualTop);
+					joinNeighbours(siteIndex, virtualTop);
 				} else if (row == siteLength) {
-					weightedQUF.union(siteIndex, virtualBottom);
+					joinNeighbours(siteIndex, virtualBottom);
 				}
 
 				int neighbourIndex = 0;
@@ -60,6 +63,16 @@ public class Percolation {
 
 	public boolean percolates() {
 		return weightedQUF.connected(virtualTop, virtualBottom);
+	}
+
+	// is site (row i, column j) full?
+	public boolean isFull(int row, int column) {
+		if (isWithinBoundary(row, column)) {
+			int siteIndex = getIndex(row, column);
+			return (weightedQUF.connected(virtualTop, siteIndex) || weightedQUF
+					.connected(virtualBottom, siteIndex));
+		}
+		return false;
 	}
 
 	private boolean isWithinBoundary(int row, int column) {
@@ -99,18 +112,17 @@ public class Percolation {
 
 	public static void main(String[] args) {
 		Percolation _this = new Percolation(5);
+		_this.open(3, 3);
+		System.out.println(_this.isFull(3, 3));
+
 		_this.open(1, 1);
 		_this.open(1, 2);
 		_this.open(2, 2);
-		_this.open(2, 3);
-		_this.open(3, 3);
-		_this.open(3, 4);
-		_this.open(4, 4);
-		_this.open(4, 5);
+		_this.open(3, 2);
 		_this.open(5, 3);
-		_this.open(5, 2);
-		_this.open(5, 1);
-		_this.open(5, 4);
+		_this.open(4, 3);
+		System.out.println(_this.isFull(3, 3));
+
 		System.out.println(_this.percolates());
 	}
 
