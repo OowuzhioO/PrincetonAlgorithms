@@ -54,6 +54,7 @@ public class WeightedQuickUnionImpl {
 		System.out.println(anImpl.isConnected(0, 9));
 		System.out.println(anImpl.isConnected(8, 9));
 		System.out.println(anImpl.isConnected(8, 2));
+		System.out.println(anImpl.isConnected(1, 9));
 
 	}
 
