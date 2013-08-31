@@ -71,7 +71,8 @@ public class Percolation {
 
 	private void joinNeighbours(int sitesIndex, int neighbourIndex) {
 		if (neighbourIndex != -1 && sites[neighbourIndex]) {
-			System.out.println("Joining Neighbours " + sitesIndex + " and " + neighbourIndex);
+			System.out.println("Joining Neighbours " + sitesIndex + " and "
+					+ neighbourIndex);
 			weightedQUF.union(sitesIndex, neighbourIndex);
 		}
 	}
@@ -81,40 +82,35 @@ public class Percolation {
 	}
 
 	private int getLeftNeighbourIndex(int row, int column) {
-		if (column != 1) {
-			return getIndex(row, column - 1);
-		}
-		return -1;
+		return (column != 1) ? getIndex(row, column - 1) : -1;
 	}
 
 	private int getRightNeighbourIndex(int row, int column) {
-		if (column != siteLength) {
-			return getIndex(row, column + 1);
-		}
-		return -1;
+		return (column != siteLength) ? getIndex(row, column + 1) : -1;
 	}
 
 	private int getTopNeighbourIndex(int row, int column) {
-		if (row != 1) {
-			return getIndex(row - 1, column);
-		}
-		return -1;
+		return (row != 1) ? getIndex(row - 1, column) : -1;
 	}
 
 	private int getBottomNeighbourIndex(int row, int column) {
-		if (row != siteLength) {
-			return getIndex(row + 1, column);
-		}
-		return -1;
+		return (row != siteLength) ? getIndex(row + 1, column) : -1;
 	}
 
 	public static void main(String[] args) {
 		Percolation _this = new Percolation(5);
-		_this.open(1, 5);
-		_this.open(2, 5);
-		_this.open(3, 5);
+		_this.open(1, 1);
+		_this.open(1, 2);
+		_this.open(2, 2);
+		_this.open(2, 3);
+		_this.open(3, 3);
+		_this.open(3, 4);
+		_this.open(4, 4);
 		_this.open(4, 5);
-		_this.open(5, 5);
+		_this.open(5, 3);
+		_this.open(5, 2);
+		_this.open(5, 1);
+		_this.open(5, 4);
 		System.out.println(_this.percolates());
 	}
 
