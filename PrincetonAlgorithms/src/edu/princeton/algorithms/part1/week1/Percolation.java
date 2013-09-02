@@ -30,34 +30,33 @@ public class Percolation {
 	 * @param column
 	 */
 	public void open(int row, int column) {
-		if (isWithinBoundary(row, column)) {
-			int siteIndex = getIndex(row, column);
-			if (!sites[siteIndex]) {
-				System.out.println("Opening site# " + siteIndex);
-				sites[siteIndex] = true;
-				if (row == 1) {
-					joinNeighbours(siteIndex, virtualTop);
-				} else if (row == siteLength) {
-					joinNeighbours(siteIndex, virtualBottom);
-				}
-
-				int neighbourIndex = 0;
-				neighbourIndex = getLeftNeighbourIndex(row, column);
-				joinNeighbours(siteIndex, neighbourIndex);
-
-				neighbourIndex = getRightNeighbourIndex(row, column);
-				joinNeighbours(siteIndex, neighbourIndex);
-
-				neighbourIndex = getTopNeighbourIndex(row, column);
-				joinNeighbours(siteIndex, neighbourIndex);
-
-				neighbourIndex = getBottomNeighbourIndex(row, column);
-				joinNeighbours(siteIndex, neighbourIndex);
-
-			} else {
-				System.out.println("The requested site# " + siteIndex
-						+ " is already open");
+		isWithinBoundary(row, column);
+		int siteIndex = getIndex(row, column);
+		if (!sites[siteIndex]) {
+			System.out.println("Opening site# " + siteIndex);
+			sites[siteIndex] = true;
+			if (row == 1) {
+				joinNeighbours(siteIndex, virtualTop);
+			} else if (row == siteLength) {
+				joinNeighbours(siteIndex, virtualBottom);
 			}
+
+			int neighbourIndex = 0;
+			neighbourIndex = getLeftNeighbourIndex(row, column);
+			joinNeighbours(siteIndex, neighbourIndex);
+
+			neighbourIndex = getRightNeighbourIndex(row, column);
+			joinNeighbours(siteIndex, neighbourIndex);
+
+			neighbourIndex = getTopNeighbourIndex(row, column);
+			joinNeighbours(siteIndex, neighbourIndex);
+
+			neighbourIndex = getBottomNeighbourIndex(row, column);
+			joinNeighbours(siteIndex, neighbourIndex);
+
+		} else {
+			System.out.println("The requested site# " + siteIndex
+					+ " is already open");
 		}
 	}
 
@@ -67,17 +66,20 @@ public class Percolation {
 
 	// is site (row i, column j) full?
 	public boolean isFull(int row, int column) {
-		if (isWithinBoundary(row, column)) {
-			int siteIndex = getIndex(row, column);
-			return (weightedQUF.connected(virtualTop, siteIndex) || weightedQUF
-					.connected(virtualBottom, siteIndex));
-		}
-		return false;
+		isWithinBoundary(row, column);
+		int siteIndex = getIndex(row, column);
+		return (weightedQUF.connected(virtualTop, siteIndex) || weightedQUF
+				.connected(virtualBottom, siteIndex));
+	}
+
+	public boolean isOpen(int row, int column) {
+		isWithinBoundary(row, column);
+		return sites[getIndex(row, column)];
 	}
 
 	private boolean isWithinBoundary(int row, int column) {
 		if (row <= 0 || row > siteLength || column <= 0 || column > siteLength) {
-			throw new ArrayIndexOutOfBoundsException("Invalid index");
+			throw new ArrayIndexOutOfBoundsException("Invalid index " + row + ", " + column);
 		}
 		return true;
 	}
@@ -112,16 +114,17 @@ public class Percolation {
 
 	public static void main(String[] args) {
 		Percolation _this = new Percolation(5);
-		_this.open(3, 3);
-		System.out.println(_this.isFull(3, 3));
-
-		_this.open(1, 1);
-		_this.open(1, 2);
-		_this.open(2, 2);
-		_this.open(3, 2);
+		_this.isOpen(5, 3);
 		_this.open(5, 3);
-		_this.open(4, 3);
-		System.out.println(_this.isFull(3, 3));
+		System.out.println(_this.isFull(5, 3));
+
+		// _this.open(1, 1);
+		// _this.open(1, 2);
+		// _this.open(2, 2);
+		// _this.open(3, 2);
+		// _this.open(3, 3);
+		// _this.open(4, 3);
+		// System.out.println(_this.isFull(3, 3));
 
 		System.out.println(_this.percolates());
 	}
