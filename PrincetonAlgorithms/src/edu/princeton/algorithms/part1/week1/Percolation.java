@@ -29,7 +29,7 @@ public class Percolation {
 		isWithinBoundary(row, column);
 		int siteIndex = getIndex(row, column);
 		if (!sites[siteIndex]) {
-			System.out.println("Opening site# " + siteIndex);
+//			System.out.println("Opening site# " + siteIndex);
 			sites[siteIndex] = true;
 			if (row == 0) {
 				joinNeighbours(siteIndex, virtualTop);
@@ -39,19 +39,15 @@ public class Percolation {
 
 			int neighbourIndex = 0;
 			neighbourIndex = getLeftNeighbourIndex(row, column);
-			System.out.println("Left Neighbour index is " + neighbourIndex);
 			joinNeighbours(siteIndex, neighbourIndex);
 
 			neighbourIndex = getRightNeighbourIndex(row, column);
-			System.out.println("Right Neighbour index is " + neighbourIndex);
 			joinNeighbours(siteIndex, neighbourIndex);
 
 			neighbourIndex = getTopNeighbourIndex(row, column);
-			System.out.println("Top Neighbour index is " + neighbourIndex);
 			joinNeighbours(siteIndex, neighbourIndex);
 
 			neighbourIndex = getBottomNeighbourIndex(row, column);
-			System.out.println("Bottom Neighbour index is " + neighbourIndex);
 			joinNeighbours(siteIndex, neighbourIndex);
 		}
 	}
@@ -82,8 +78,8 @@ public class Percolation {
 
 	private void joinNeighbours(int sitesIndex, int neighbourIndex) {
 		if (neighbourIndex != -1 && sites[neighbourIndex]) {
-			System.out.println("Joining Neighbours " + sitesIndex + " and "
-					+ neighbourIndex);
+//			System.out.println("Joining Neighbours " + sitesIndex + " and "
+//					+ neighbourIndex);
 			weightedQUF.union(sitesIndex, neighbourIndex);
 		}
 	}
