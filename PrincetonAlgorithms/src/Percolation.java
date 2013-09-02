@@ -1,6 +1,3 @@
-
-
-
 public class Percolation {
 
 	private boolean sites[];
@@ -28,7 +25,6 @@ public class Percolation {
 		isWithinBoundary(row, column);
 		int siteIndex = getIndex(row, column);
 		if (!sites[siteIndex]) {
-//			System.out.println("Opening site# " + siteIndex);
 			sites[siteIndex] = true;
 			if (row == 0) {
 				joinNeighbours(siteIndex, virtualTop);
@@ -77,8 +73,6 @@ public class Percolation {
 
 	private void joinNeighbours(int sitesIndex, int neighbourIndex) {
 		if (neighbourIndex != -1 && sites[neighbourIndex]) {
-//			System.out.println("Joining Neighbours " + sitesIndex + " and "
-//					+ neighbourIndex);
 			weightedQUF.union(sitesIndex, neighbourIndex);
 		}
 	}
@@ -102,19 +96,4 @@ public class Percolation {
 	private int getBottomNeighbourIndex(int row, int column) {
 		return (row != siteLength - 1) ? getIndex(row + 1, column) : -1;
 	}
-
-	public static void main(String[] args) {
-		Percolation _this = new Percolation(5);
-		_this.isOpen(0, 0);
-		_this.open(0, 0);
-		System.out.println(_this.isFull(0, 0));
-
-		_this.open(1, 0);
-		_this.open(2, 0);
-		_this.open(3, 0);
-		_this.open(4, 0);
-
-		System.out.println(_this.percolates());
-	}
-
 }
