@@ -5,44 +5,77 @@ import edu.princeton.algorithms.alg4.StdRandom;
 public class PercolationStats {
 
 	private int siteLength;
+	private int siteCount;
 	private int simulationCount;
+	private double[] openedSitesRatio;
 
 	public PercolationStats(int N, int T) {
 		siteLength = N;
 		simulationCount = T;
+		siteCount = N * N;
+
+		startSimulation();
 	}
 
-	public void startSimulation() {
-		int[] openedSitesCount = new int[simulationCount];
-		int totalOpenedSitesCount = 0;
+	private void startSimulation() {
+		openedSitesRatio = new double[simulationCount];
 
 		for (int i = 0; i < simulationCount; i++) {
-			openedSitesCount[i] = run();
-			totalOpenedSitesCount += openedSitesCount[i];
+			openedSitesRatio[i] = run() / siteCount;
 		}
-		System.out.println("Total mean opened sites for entire simulation is "
-				+ totalOpenedSitesCount / simulationCount);
 	}
 
-	public int run() {
-		int opened = 0;
+	public double mean() {
+		double totalOpenedSitesRatio = 0;
+		for (int i = 0; i < simulationCount; i++) {
+			totalOpenedSitesRatio += openedSitesRatio[i];
+		}
+		return totalOpenedSitesRatio / simulationCount;
+	}
+
+	public double stddev() {
+		double meanValue = mean();
+		double variance = 0;
+		double meanDifference = 0;
+		for (int i = 0; i < openedSitesRatio.length; i++) {
+			meanDifference += Math.pow(meanValue - openedSitesRatio[i], 2);
+		}
+		variance = meanDifference / simulationCount;
+
+		return Math.sqrt(variance);
+	}
+
+	public double run() {
+		double openedSites = 0;
 		Percolation perc = new Percolation(siteLength);
 		while (!perc.percolates()) {
 			int i = StdRandom.uniform(siteLength);
 			int j = StdRandom.uniform(siteLength);
 			if (!perc.isOpen(i, j)) {
 				perc.open(i, j);
-				opened++;
+				openedSites++;
 			}
 		}
-		System.out.println("System percolated after opening " + opened
+		System.out.println("System percolated after opening " + openedSites
 				+ " sites");
-		return opened;
+		return openedSites;
 
 	}
 
+	public double confidenceLo() {
+		return mean() - (1.96 * (stddev() / Math.sqrt(simulationCount)));
+	}
+
+	public double confidenceHi() {
+		return mean() + (1.96 * (stddev() / Math.sqrt(simulationCount)));
+	}
+
 	public static void main(String[] args) {
-		new PercolationStats(20, 40).startSimulation();
+		PercolationStats myStats = new PercolationStats(5, 1000);
+		System.out.println(myStats.mean());
+		System.out.println(myStats.stddev());
+		System.out.println(myStats.confidenceLo());
+		System.out.println(myStats.confidenceHi());
 	}
 
 }
