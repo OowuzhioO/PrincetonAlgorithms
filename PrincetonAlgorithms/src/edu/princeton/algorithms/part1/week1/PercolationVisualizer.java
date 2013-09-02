@@ -1,5 +1,4 @@
 package edu.princeton.algorithms.part1.week1;
-
 /****************************************************************************
  *  Compilation:  javac PercolationVisualizer.java
  *  Execution:    java PercolationVisualizer input.txt
@@ -38,8 +37,8 @@ public class PercolationVisualizer {
 
         // draw N-by-N grid
         int opened = 0;
-        for (int row = 1; row <= N; row++) {
-            for (int col = 1; col <= N; col++) {
+        for (int row = 0; row < N; row++) {
+            for (int col = 0; col < N; col++) {
                 if (perc.isFull(row, col)) {
                     StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                     opened++;
@@ -96,8 +95,8 @@ public class PercolationVisualizer {
         PercolationVisualizer.draw(perc, N);
         StdDraw.show(delay);
         while (!perc.percolates()) {
-            int i = 1 + StdRandom.uniform(N);
-            int j = 1 + StdRandom.uniform(N);
+            int i = StdRandom.uniform(N);
+            int j = StdRandom.uniform(N);
             if (!perc.isOpen(i, j)) {
                 perc.open(i, j);
                 draw(perc, N);
@@ -108,7 +107,7 @@ public class PercolationVisualizer {
 
     public static void main(String[] args) {
         if (args.length >= 2) throw new RuntimeException("Command line argument should be a filename or integer");
-        else if (args.length == 0) simulateFromRandom(10);
+        else if (args.length == 0) simulateFromRandom(20);
         else {
             try {
                 int N = Integer.parseInt(args[0]);
