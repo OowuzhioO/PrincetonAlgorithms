@@ -1,6 +1,3 @@
-
-
-
 public class PercolationStats {
 
 	private int siteLength;
@@ -70,7 +67,7 @@ public class PercolationStats {
 	}
 
 	public static void main(String[] args) {
-		PercolationStats myStats = new PercolationStats(5, 1000);
+		PercolationStats myStats = new PercolationStats(200, 100);
 		System.out.println(myStats.mean());
 		System.out.println(myStats.stddev());
 		System.out.println(myStats.confidenceLo());

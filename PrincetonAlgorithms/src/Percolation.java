@@ -10,15 +10,11 @@ public class Percolation {
 	public Percolation(int n) {
 		siteLength = n;
 		sitesCount = n * n;
-		sites = new boolean[sitesCount + 2];
-
+		sites = new boolean[sitesCount];
 		weightedQUF = new WeightedQuickUnionUF(sitesCount + 2);
 
 		virtualTop = sitesCount;
 		virtualBottom = sitesCount + 1;
-
-		sites[virtualTop] = true;
-		sites[virtualBottom] = true;
 	}
 
 	public void open(int row, int column) {
@@ -26,24 +22,18 @@ public class Percolation {
 		int siteIndex = getIndex(row, column);
 		if (!sites[siteIndex]) {
 			sites[siteIndex] = true;
+
+			connectWithLeftNeighbor(row, column);
+			connectWithRightNeighbor(row, column);
+			connectWithTopNeighbor(row, column);
+			connectWithBottomNeighbor(row, column);
+
 			if (row == 0) {
-				joinNeighbours(siteIndex, virtualTop);
-			} else if (row == siteLength - 1) {
-				joinNeighbours(siteIndex, virtualBottom);
+				weightedQUF.union(siteIndex, virtualTop);
+			} else if ((row == siteLength - 1) && isFull(row, column)) {
+				weightedQUF.union(siteIndex, virtualBottom);
 			}
 
-			int neighbourIndex = 0;
-			neighbourIndex = getLeftNeighbourIndex(row, column);
-			joinNeighbours(siteIndex, neighbourIndex);
-
-			neighbourIndex = getRightNeighbourIndex(row, column);
-			joinNeighbours(siteIndex, neighbourIndex);
-
-			neighbourIndex = getTopNeighbourIndex(row, column);
-			joinNeighbours(siteIndex, neighbourIndex);
-
-			neighbourIndex = getBottomNeighbourIndex(row, column);
-			joinNeighbours(siteIndex, neighbourIndex);
 		}
 	}
 
@@ -54,8 +44,7 @@ public class Percolation {
 	public boolean isFull(int row, int column) {
 		isWithinBoundary(row, column);
 		int siteIndex = getIndex(row, column);
-		return (weightedQUF.connected(virtualTop, siteIndex) || weightedQUF
-				.connected(virtualBottom, siteIndex));
+		return weightedQUF.connected(virtualTop, siteIndex);
 	}
 
 	public boolean isOpen(int row, int column) {
@@ -64,36 +53,42 @@ public class Percolation {
 	}
 
 	private boolean isWithinBoundary(int row, int column) {
-		if (row < 0 || row > siteLength || column < 0 || column > siteLength) {
-			throw new ArrayIndexOutOfBoundsException("Invalid index " + row
-					+ ", " + column);
+		if (row < 0 || row > siteLength)
+			throw new ArrayIndexOutOfBoundsException("row index " + row
+					+ " must be between 0 and " + (siteLength - 1));
+
+		if (column < 0 || column > siteLength) {
+			throw new ArrayIndexOutOfBoundsException("row index " + column
+					+ " must be between 0 and " + (siteLength - 1));
 		}
 		return true;
 	}
 
-	private void joinNeighbours(int sitesIndex, int neighbourIndex) {
-		if (neighbourIndex != -1 && sites[neighbourIndex]) {
-			weightedQUF.union(sitesIndex, neighbourIndex);
-		}
-	}
-
 	private int getIndex(int row, int column) {
-		return (row) * siteLength + (column);
+		return (row * siteLength) + (column);
 	}
 
-	private int getLeftNeighbourIndex(int row, int column) {
-		return (column != 0) ? getIndex(row, column - 1) : -1;
+	private void connectWithLeftNeighbor(int row, int column) {
+		if (column != 0 && isOpen(row, column - 1))
+			weightedQUF.union(getIndex(row, column), getIndex(row, column - 1));
+
 	}
 
-	private int getRightNeighbourIndex(int row, int column) {
-		return (column != siteLength - 1) ? getIndex(row, column + 1) : -1;
+	private void connectWithRightNeighbor(int row, int column) {
+		if (column != siteLength - 1 && isOpen(row, column + 1))
+			weightedQUF.union(getIndex(row, column), getIndex(row, column + 1));
+
 	}
 
-	private int getTopNeighbourIndex(int row, int column) {
-		return (row != 0) ? getIndex(row - 1, column) : -1;
+	private void connectWithTopNeighbor(int row, int column) {
+		if (row != 0 && isOpen(row - 1, column))
+			weightedQUF.union(getIndex(row, column), getIndex(row - 1, column));
+
 	}
 
-	private int getBottomNeighbourIndex(int row, int column) {
-		return (row != siteLength - 1) ? getIndex(row + 1, column) : -1;
+	private void connectWithBottomNeighbor(int row, int column) {
+		if (row != siteLength - 1 && isOpen(row + 1, column))
+			weightedQUF.union(getIndex(row, column), getIndex(row + 1, column));
+
 	}
 }
