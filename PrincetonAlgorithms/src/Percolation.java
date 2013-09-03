@@ -57,11 +57,11 @@ public class Percolation {
 			connectWithTopNeighbor(row, column);
 			connectWithBottomNeighbor(row, column);
 
-			if (row == 0) {
+			if (row == 1) {
 				// If the site is a top site,
 				// connect it with virtual top site
 				weightedQUF.union(siteIndex, virtualTop);
-			} else if ((row == siteLength - 1) && isFull(row, column)) {
+			} else if ((row == siteLength) && isFull(row, column)) {
 				// If the site is a bottom full site,
 				// connect with virtual bottom site
 				weightedQUF.union(siteIndex, virtualBottom);
@@ -109,13 +109,13 @@ public class Percolation {
 	 * boundary.
 	 */
 	private boolean isWithinBoundary(int row, int column) {
-		if (row < 0 || row > siteLength - 1)
+		if (row < 1 || row > siteLength)
 			throw new IndexOutOfBoundsException("row index " + row
-					+ " must be between 0 and " + (siteLength - 1));
+					+ " must be between 1 and " + siteLength);
 
-		if (column < 0 || column > siteLength - 1) {
+		if (column < 1 || column > siteLength) {
 			throw new IndexOutOfBoundsException("row index " + column
-					+ " must be between 0 and " + (siteLength - 1));
+					+ " must be between 1 and " + siteLength);
 		}
 		return true;
 	}
@@ -125,7 +125,7 @@ public class Percolation {
 	 * 
 	 */
 	private int getIndex(int row, int column) {
-		return (row * siteLength) + (column);
+		return ((row - 1) * siteLength) + (column - 1);
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class Percolation {
 	 */
 	private void connectWithLeftNeighbor(int row, int column) {
 		// Check that site is not the first column and left neighbor is open
-		if (column != 0 && isOpen(row, column - 1))
+		if (column != 1 && isOpen(row, column - 1))
 			weightedQUF.union(getIndex(row, column), getIndex(row, column - 1));
 	}
 
@@ -145,7 +145,7 @@ public class Percolation {
 	private void connectWithRightNeighbor(int row, int column) {
 		// Check that site is not the last column and right
 		// neighbor is open
-		if (column != siteLength - 1 && isOpen(row, column + 1))
+		if (column != siteLength && isOpen(row, column + 1))
 			weightedQUF.union(getIndex(row, column), getIndex(row, column + 1));
 	}
 
@@ -155,7 +155,7 @@ public class Percolation {
 	 */
 	private void connectWithTopNeighbor(int row, int column) {
 		// Check that site is not the first row and top neighbor is open
-		if (row != 0 && isOpen(row - 1, column))
+		if (row != 1 && isOpen(row - 1, column))
 			weightedQUF.union(getIndex(row, column), getIndex(row - 1, column));
 	}
 
@@ -165,13 +165,13 @@ public class Percolation {
 	 */
 	private void connectWithBottomNeighbor(int row, int column) {
 		// Check that given site is not the last row and bottom neighbor is open
-		if (row != siteLength - 1 && isOpen(row + 1, column))
+		if (row != siteLength && isOpen(row + 1, column))
 			weightedQUF.union(getIndex(row, column), getIndex(row + 1, column));
 	}
 
 	public static void main(String[] args) {
 		Percolation _this = null;
-		int N = 20;
+		int N = 200;
 		if (args.length >= 2)
 			throw new RuntimeException(
 					"Command line argument should be a filename or integer");
@@ -180,8 +180,8 @@ public class Percolation {
 		_this = new Percolation(N);
 		int openedSites = 0;
 		while (!_this.percolates()) {
-			int i = StdRandom.uniform(N);
-			int j = StdRandom.uniform(N);
+			int i = 1 + StdRandom.uniform(N);
+			int j = 1 + StdRandom.uniform(N);
 			if (!_this.isOpen(i, j)) {
 				_this.open(i, j);
 				openedSites++;
