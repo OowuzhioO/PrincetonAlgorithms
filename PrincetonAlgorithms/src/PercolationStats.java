@@ -76,8 +76,8 @@ public class PercolationStats {
 		double openedSites = 0;
 		Percolation perc = new Percolation(siteLength);
 		while (!perc.percolates()) {
-			int i = StdRandom.uniform(siteLength);
-			int j = StdRandom.uniform(siteLength);
+			int i = 1  + StdRandom.uniform(siteLength);
+			int j = 1 + StdRandom.uniform(siteLength);
 			if (!perc.isOpen(i, j)) {
 				perc.open(i, j);
 				openedSites++;
@@ -102,7 +102,7 @@ public class PercolationStats {
 	}
 
 	public static void main(String[] args) {
-		int N = 200;
+		int N = 20;
 		int T = 100;
 		if (args.length == 2) {
 			try {
