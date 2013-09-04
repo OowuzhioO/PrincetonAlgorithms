@@ -109,6 +109,8 @@ public class PercolationStats {
             try {
                 N = Integer.parseInt(args[0]);
                 T = Integer.parseInt(args[1]);
+                if (N <= 0 || T <= 0)
+                    throw new IllegalArgumentException();
             } catch (NumberFormatException nfe) {
                 StdOut.println("Invalid arguments. Proceeding with defaults");
             }
