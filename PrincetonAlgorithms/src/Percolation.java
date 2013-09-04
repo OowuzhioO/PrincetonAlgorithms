@@ -51,7 +51,6 @@ public class Percolation {
         int siteIndex = getIndex(row, column);
         if (!sites[siteIndex]) {
             sites[siteIndex] = true;
-            StdOut.println("Opened site index " + siteIndex);
 
             if (siteLength != 1) {
                 connectWithLeftNeighbor(row, column);
