@@ -15,7 +15,7 @@
 public class Percolation {
 
     // Array storing Open/Closed state of every site in the system
-    private boolean[] sites;
+    private char[] sites;
     // # of sites
     private int sitesCount;
     private WeightedQuickUnionUF weightedQUF;
@@ -29,7 +29,12 @@ public class Percolation {
     public Percolation(int n) {
         siteLength = n;
         sitesCount = n * n;
-        sites = new boolean[sitesCount];
+        sites = new char[sitesCount];
+        
+        for(int i = 0; i < sitesCount; i++) {
+            sites[i] = 'C';
+        }
+        
         // Extra 2 cells to store virtual top and bottom nodes respectively
         weightedQUF = new WeightedQuickUnionUF(sitesCount + 2);
 
@@ -49,30 +54,37 @@ public class Percolation {
     public void open(int row, int column) {
         isWithinBoundary(row, column);
         int siteIndex = getIndex(row, column);
-        if (!sites[siteIndex]) {
-            sites[siteIndex] = true;
+        if (!(sites[siteIndex] == 'O')) {
+            sites[siteIndex] = 'O';
 
             if (siteLength != 1) {
-                connectWithLeftNeighbor(row, column);
-                connectWithRightNeighbor(row, column);
-                connectWithTopNeighbor(row, column);
-                connectWithBottomNeighbor(row, column);
-
                 if (row == 1) {
                     // If the site is a top site,
                     // connect it with virtual top site
                     weightedQUF.union(siteIndex, virtualTop);
-                } else if ((row == siteLength)) {
+                    sites[siteIndex] = 'F';
+                }
+                connectNeighbors(row, column);
+
+                if ((row == siteLength)) {
                     // If the site is a bottom full site,
                     // connect with virtual bottom site
                     weightedQUF.union(siteIndex, virtualBottom);
                 }
             } else {
+                sites[siteIndex] = 'F';
                 weightedQUF.union(siteIndex, virtualTop);
                 weightedQUF.union(siteIndex, virtualBottom);
             }
 
         }
+    }
+
+    private void connectNeighbors(int row, int column) {
+        connectWithLeftNeighbor(row, column);
+        connectWithRightNeighbor(row, column);
+        connectWithTopNeighbor(row, column);
+        connectWithBottomNeighbor(row, column);
     }
 
     /**
@@ -93,7 +105,7 @@ public class Percolation {
     public boolean isFull(int row, int column) {
         isWithinBoundary(row, column);
         int siteIndex = getIndex(row, column);
-        return weightedQUF.connected(virtualTop, siteIndex);
+        return sites[siteIndex] == 'F';
     }
 
     /**
@@ -104,7 +116,7 @@ public class Percolation {
      */
     public boolean isOpen(int row, int column) {
         isWithinBoundary(row, column);
-        return sites[getIndex(row, column)];
+        return sites[getIndex(row, column)] != 'C';
     }
 
     /**
@@ -139,8 +151,20 @@ public class Percolation {
      */
     private void connectWithLeftNeighbor(int row, int column) {
         // Check that site is not the first column and left neighbor is open
-        if (column != 1 && isOpen(row, column - 1))
-            weightedQUF.union(getIndex(row, column), getIndex(row, column - 1));
+        if (column != 1 && isOpen(row, column - 1)) {
+            int siteIndex = getIndex(row, column);
+            int neighborIndex = getIndex(row, column - 1);
+            weightedQUF.union(siteIndex, neighborIndex);
+            if (weightedQUF.connected(siteIndex, virtualTop)) {
+                if(sites[siteIndex] != 'F') {
+                    sites[siteIndex] = 'F';
+                }
+                if(sites[neighborIndex] != 'F') {
+                    sites[neighborIndex] = 'F';
+                    connectNeighbors(row, column - 1);                
+                }
+            }
+        }
     }
 
     /**
@@ -150,8 +174,20 @@ public class Percolation {
     private void connectWithRightNeighbor(int row, int column) {
         // Check that site is not the last column and right
         // neighbor is open
-        if (column != siteLength && isOpen(row, column + 1))
-            weightedQUF.union(getIndex(row, column), getIndex(row, column + 1));
+        if (column != siteLength && isOpen(row, column + 1)) {
+            int siteIndex = getIndex(row, column);
+            int neighborIndex = getIndex(row, column + 1);
+            weightedQUF.union(siteIndex, neighborIndex);
+            if (weightedQUF.connected(siteIndex, virtualTop)) {
+                if(sites[siteIndex] != 'F') {
+                    sites[siteIndex] = 'F';
+                }
+                if(sites[neighborIndex] != 'F') {
+                    sites[neighborIndex] = 'F';
+                    connectNeighbors(row, column + 1);                
+                }
+            }
+        }
     }
 
     /**
@@ -160,8 +196,20 @@ public class Percolation {
      */
     private void connectWithTopNeighbor(int row, int column) {
         // Check that site is not the first row and top neighbor is open
-        if (row != 1 && isOpen(row - 1, column))
-            weightedQUF.union(getIndex(row, column), getIndex(row - 1, column));
+        if (row != 1 && isOpen(row - 1, column)) {
+            int siteIndex = getIndex(row, column);
+            int neighborIndex = getIndex(row - 1, column);
+            weightedQUF.union(siteIndex, neighborIndex);
+            if (weightedQUF.connected(siteIndex, virtualTop)) {
+                if(sites[siteIndex] != 'F') {
+                    sites[siteIndex] = 'F';
+                }
+                if(sites[neighborIndex] != 'F') {
+                    sites[neighborIndex] = 'F';
+                    connectNeighbors(row - 1, column);                
+                }
+            }
+        }
     }
 
     /**
@@ -170,8 +218,20 @@ public class Percolation {
      */
     private void connectWithBottomNeighbor(int row, int column) {
         // Check that given site is not the last row and bottom neighbor is open
-        if (row != siteLength && isOpen(row + 1, column))
-            weightedQUF.union(getIndex(row, column), getIndex(row + 1, column));
+        if (row != siteLength && isOpen(row + 1, column)) {
+            int siteIndex = getIndex(row, column);
+            int neighborIndex = getIndex(row + 1, column);
+            weightedQUF.union(getIndex(row, column), neighborIndex);
+            if (weightedQUF.connected(siteIndex, virtualTop)) {
+                if(sites[siteIndex] != 'F') {
+                    sites[siteIndex] = 'F';
+                }
+                if(sites[neighborIndex] != 'F') {
+                    sites[neighborIndex] = 'F';
+                    connectNeighbors(row + 1, column);                
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
