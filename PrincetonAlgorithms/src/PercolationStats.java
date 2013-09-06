@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------
  *  Author:        Sathishkumar Kuppuswami
  *  Written:       02/09/2013
@@ -76,6 +77,7 @@ public class PercolationStats {
     private double run() {
         double openedSites = 0;
         Percolation perc = new Percolation(siteLength);
+
         while (!perc.percolates()) {
             int i = 1 + StdRandom.uniform(siteLength);
             int j = 1 + StdRandom.uniform(siteLength);
@@ -110,7 +112,7 @@ public class PercolationStats {
                 N = Integer.parseInt(args[0]);
                 T = Integer.parseInt(args[1]);
                 if (N <= 0 || T <= 0)
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("Invalid values for N and T");
             } catch (NumberFormatException nfe) {
                 StdOut.println("Invalid arguments. Proceeding with defaults");
             }

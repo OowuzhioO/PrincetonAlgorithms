@@ -30,11 +30,11 @@ public class Percolation {
         siteLength = n;
         sitesCount = n * n;
         sites = new char[sitesCount];
-        
-        for(int i = 0; i < sitesCount; i++) {
+
+        for (int i = 0; i < sitesCount; i++) {
             sites[i] = 'C';
         }
-        
+
         // Extra 2 cells to store virtual top and bottom nodes respectively
         weightedQUF = new WeightedQuickUnionUF(sitesCount + 2);
 
@@ -54,7 +54,7 @@ public class Percolation {
     public void open(int row, int column) {
         isWithinBoundary(row, column);
         int siteIndex = getIndex(row, column);
-        if (!(sites[siteIndex] == 'O')) {
+        if ((sites[siteIndex] == 'C')) {
             sites[siteIndex] = 'O';
 
             if (siteLength != 1) {
@@ -154,15 +154,18 @@ public class Percolation {
         if (column != 1 && isOpen(row, column - 1)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row, column - 1);
-            weightedQUF.union(siteIndex, neighborIndex);
-            if (weightedQUF.connected(siteIndex, virtualTop)) {
-                if(sites[siteIndex] != 'F') {
-                    sites[siteIndex] = 'F';
-                }
-                if(sites[neighborIndex] != 'F') {
-                    sites[neighborIndex] = 'F';
-                    connectNeighbors(row, column - 1);                
-                }
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[siteIndex] = 'F';
+                connectWithTopNeighbor(row, column);
+                connectWithRightNeighbor(row, column);
+                connectWithBottomNeighbor(row, column);
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[neighborIndex] = 'F';
+                connectWithLeftNeighbor(row, column - 1);
+                connectWithTopNeighbor(row, column - 1);
+                connectWithBottomNeighbor(row, column - 1);
             }
         }
     }
@@ -177,15 +180,18 @@ public class Percolation {
         if (column != siteLength && isOpen(row, column + 1)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row, column + 1);
-            weightedQUF.union(siteIndex, neighborIndex);
-            if (weightedQUF.connected(siteIndex, virtualTop)) {
-                if(sites[siteIndex] != 'F') {
-                    sites[siteIndex] = 'F';
-                }
-                if(sites[neighborIndex] != 'F') {
-                    sites[neighborIndex] = 'F';
-                    connectNeighbors(row, column + 1);                
-                }
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[siteIndex] = 'F';
+                connectWithLeftNeighbor(row, column);
+                connectWithTopNeighbor(row, column);
+                connectWithBottomNeighbor(row, column);
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[neighborIndex] = 'F';
+                connectWithTopNeighbor(row, column + 1);
+                connectWithRightNeighbor(row, column + 1);
+                connectWithBottomNeighbor(row, column + 1);
             }
         }
     }
@@ -199,15 +205,18 @@ public class Percolation {
         if (row != 1 && isOpen(row - 1, column)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row - 1, column);
-            weightedQUF.union(siteIndex, neighborIndex);
-            if (weightedQUF.connected(siteIndex, virtualTop)) {
-                if(sites[siteIndex] != 'F') {
-                    sites[siteIndex] = 'F';
-                }
-                if(sites[neighborIndex] != 'F') {
-                    sites[neighborIndex] = 'F';
-                    connectNeighbors(row - 1, column);                
-                }
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[siteIndex] = 'F';
+                connectWithLeftNeighbor(row, column);
+                connectWithBottomNeighbor(row, column);
+                connectWithRightNeighbor(row, column);
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[neighborIndex] = 'F';
+                connectWithLeftNeighbor(row - 1, column);
+                connectWithRightNeighbor(row - 1, column);
+                connectWithTopNeighbor(row - 1, column);
             }
         }
     }
@@ -221,15 +230,18 @@ public class Percolation {
         if (row != siteLength && isOpen(row + 1, column)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row + 1, column);
-            weightedQUF.union(getIndex(row, column), neighborIndex);
-            if (weightedQUF.connected(siteIndex, virtualTop)) {
-                if(sites[siteIndex] != 'F') {
-                    sites[siteIndex] = 'F';
-                }
-                if(sites[neighborIndex] != 'F') {
-                    sites[neighborIndex] = 'F';
-                    connectNeighbors(row + 1, column);                
-                }
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[siteIndex] = 'F';
+                connectWithLeftNeighbor(row, column);
+                connectWithRightNeighbor(row, column);
+                connectWithTopNeighbor(row, column);
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+                weightedQUF.union(siteIndex, neighborIndex);
+                sites[neighborIndex] = 'F';
+                connectWithLeftNeighbor(row + 1, column);
+                connectWithRightNeighbor(row + 1, column);
+                connectWithBottomNeighbor(row + 1, column);
             }
         }
     }
@@ -245,7 +257,6 @@ public class Percolation {
             int j = in.readInt();
             perc.open(i, j);
         }
-        StdOut.println("System percolates " + perc.percolates());
 
     }
 }
