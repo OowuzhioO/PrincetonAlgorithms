@@ -154,13 +154,13 @@ public class Percolation {
         if (column != 1 && isOpen(row, column - 1)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row, column - 1);
-            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[siteIndex] = 'F';
                 connectWithTopNeighbor(row, column);
                 connectWithRightNeighbor(row, column);
                 connectWithBottomNeighbor(row, column);
-            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[neighborIndex] = 'F';
                 connectWithLeftNeighbor(row, column - 1);
@@ -180,13 +180,13 @@ public class Percolation {
         if (column != siteLength && isOpen(row, column + 1)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row, column + 1);
-            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[siteIndex] = 'F';
                 connectWithLeftNeighbor(row, column);
                 connectWithTopNeighbor(row, column);
                 connectWithBottomNeighbor(row, column);
-            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[neighborIndex] = 'F';
                 connectWithTopNeighbor(row, column + 1);
@@ -205,13 +205,13 @@ public class Percolation {
         if (row != 1 && isOpen(row - 1, column)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row - 1, column);
-            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[siteIndex] = 'F';
                 connectWithLeftNeighbor(row, column);
                 connectWithBottomNeighbor(row, column);
                 connectWithRightNeighbor(row, column);
-            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[neighborIndex] = 'F';
                 connectWithLeftNeighbor(row - 1, column);
@@ -230,13 +230,13 @@ public class Percolation {
         if (row != siteLength && isOpen(row + 1, column)) {
             int siteIndex = getIndex(row, column);
             int neighborIndex = getIndex(row + 1, column);
-            if (sites[neighborIndex] == 'F' && sites[siteIndex] != 'F') {
+            if (sites[neighborIndex] == 'F' && sites[siteIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[siteIndex] = 'F';
                 connectWithLeftNeighbor(row, column);
                 connectWithRightNeighbor(row, column);
                 connectWithTopNeighbor(row, column);
-            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] != 'F') {
+            } else if (sites[siteIndex] == 'F' && sites[neighborIndex] == 'O') {
                 weightedQUF.union(siteIndex, neighborIndex);
                 sites[neighborIndex] = 'F';
                 connectWithLeftNeighbor(row + 1, column);
